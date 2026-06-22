@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="790" viewBox="0 0 1440 790">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#06111d"/><stop offset="100%" stop-color="#101827"/></linearGradient>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#70c7e8"/></marker>
+    <filter id="b"><feGaussianBlur stdDeviation="42"/></filter>
+  </defs>
+  <rect width="1440" height="790" rx="34" fill="url(#bg2)"/>
+  <circle cx="210" cy="130" r="220" fill="#00d4ff" opacity="0.13" filter="url(#b)"/>
+  <circle cx="1210" cy="660" r="260" fill="#b388ff" opacity="0.14" filter="url(#b)"/>
+  <text x="70" y="78" fill="#ffffff" font-family="Inter,Segoe UI,Arial" font-size="38" font-weight="900">v4 Research Architecture</text>
+  <text x="70" y="112" fill="#a9bdd1" font-family="Inter,Segoe UI,Arial" font-size="16">A notebook evolved into a quant research cockpit: forecasts, diagnostics, risk, and agents.</text>
+  
+    <rect x="72" y="170" width="254" height="98" rx="20" fill="#ffffff" opacity="0.09" stroke="#00d4ff" stroke-opacity="0.55"/>
+    <text x="94" y="207" fill="#ffffff" font-family="Inter,Segoe UI,Arial" font-size="19" font-weight="850">Data + Sentiment</text>
+    <text x="94" y="236" fill="#a9bdd1" font-family="Inter,Segoe UI,Arial" font-size="13">OHLCV, SPY/QQQ/XLK/VIX, news, FRED</text>
+    
+  
+    <rect x="382" y="170" width="254" height="98" rx="20" fill="#ffffff" opacity="0.09" stroke="#61e294" stroke-opacity="0.55"/>
+    <text x="404" y="207" fill="#ffffff" font-family="Inter,Segoe UI,Arial" font-size="19" font-weight="850">Feature Engine</text>
+    <text x="404" y="236" fill="#a9bdd1" font-family="Inter,Segoe UI,Arial" font-size="13">67 columns, technicals, macro, live return</text>
+    
+  
+    <rect x="692" y="170" width="254" height="98" rx="20" fill="#ffffff" opacity="0.09" stroke="#b388ff" stroke-opacity="0.55"/>
+    <text x="714" y="207" fill="#ffffff" font-family="Inter,Segoe UI,Arial" font-size="19" font-weight="850">Forecast Bench</text>
+    <text x="714" y="236" fill="#a9bdd1" font-family="Inter,Segoe UI,Arial" font-size="13">linear, trees, boosting, ensemble, LSTM</text>
+    
+  
+    <rect x="1002" y="170" width="254" height="98" rx="20" fill="#ffffff" opacity="0.09" stroke="#ffcc66" stroke-opacity="0.55"/>
+    <text x="1024" y="207" fill="#ffffff" font-family="Inter,Segoe UI,Arial" font-size="19" font-weight="850">Neural Stacker</text>
+    <text x="1024" y="236" fill="#a9bdd1" font-family="Inter,Segoe UI,Arial" font-size="13">meta-learner over model signals</text>
+    
+  <path d="M326 219 C354 219, 354 219, 382 219" fill="none" stroke="#70c7e8" stroke-width="2.4" marker-end="url(#arr)" opacity="0.78"/><path d="M636 219 C664 219, 664 219, 692 219" fill="none" stroke="#70c7e8" stroke-width="2.4" marker-end="url(#arr)" opacity="0.78"/><path d="M946 219 C974 219, 974 219, 1002 219" fill="none" stroke="#70c7e8" stroke-width="2.4" marker-end="url(#arr)" opacity="0.78"/>
+  
+    <rect x="172" y="360" width="254" height="98" rx="20" fill="#ffffff" opacity="0.09" stroke="#00d4ff" stroke-opacity="0.55"/>
+    <text x="194" y="397" fill="#ffffff" font-family="Inter,Segoe UI,Arial" font-size="19" font-weight="850">Quant Diagnostics</text>
+    <text x="194" y="426" fill="#a9bdd1" font-family="Inter,Segoe UI,Arial" font-size="13">ADF, Ljung-Box, residual QQ, drift</text>
+    
+  
+    <rect x="482" y="360" width="254" height="98" rx="20" fill="#ffffff" opacity="0.09" stroke="#61e294" stroke-opacity="0.55"/>
+    <text x="504" y="397" fill="#ffffff" font-family="Inter,Segoe UI,Arial" font-size="19" font-weight="850">Regime + Volatility</text>
+    <text x="504" y="426" fill="#a9bdd1" font-family="Inter,Segoe UI,Arial" font-size="13">HMM states and GARCH conditional vol</text>
+    
+  
+    <rect x="792" y="360" width="254" height="98" rx="20" fill="#ffffff" opacity="0.09" stroke="#ff6b6b" stroke-opacity="0.55"/>
+    <text x="814" y="397" fill="#ffffff" font-family="Inter,Segoe UI,Arial" font-size="19" font-weight="850">Market Making</text>
+    <text x="814" y="426" fill="#a9bdd1" font-family="Inter,Segoe UI,Arial" font-size="13">Avellaneda-Stoikov spread model</text>
+    
+  <path d="M1129 268 C714 268, 714 360, 299 360" fill="none" stroke="#70c7e8" stroke-width="2.4" marker-end="url(#arr)" opacity="0.78"/><path d="M1129 268 C869 268, 869 360, 609 360" fill="none" stroke="#70c7e8" stroke-width="2.4" marker-end="url(#arr)" opacity="0.78"/><path d="M1129 268 C1024 268, 1024 360, 919 360" fill="none" stroke="#70c7e8" stroke-width="2.4" marker-end="url(#arr)" opacity="0.78"/>
+  
+    <rect x="260" y="560" width="254" height="98" rx="20" fill="#ffffff" opacity="0.09" stroke="#b388ff" stroke-opacity="0.55"/>
+    <text x="282" y="597" fill="#ffffff" font-family="Inter,Segoe UI,Arial" font-size="19" font-weight="850">Risk + Backtest</text>
+    <text x="282" y="626" fill="#a9bdd1" font-family="Inter,Segoe UI,Arial" font-size="13">Sharpe, Sortino, Calmar, VaR, CVaR</text>
+    
+  
+    <rect x="570" y="560" width="254" height="98" rx="20" fill="#ffffff" opacity="0.09" stroke="#00d4ff" stroke-opacity="0.55"/>
+    <text x="592" y="597" fill="#ffffff" font-family="Inter,Segoe UI,Arial" font-size="19" font-weight="850">Agentic Research</text>
+    <text x="592" y="626" fill="#a9bdd1" font-family="Inter,Segoe UI,Arial" font-size="13">technical, sentiment, bull, bear, PM</text>
+    
+  
+    <rect x="880" y="560" width="254" height="98" rx="20" fill="#ffffff" opacity="0.09" stroke="#61e294" stroke-opacity="0.55"/>
+    <text x="902" y="597" fill="#ffffff" font-family="Inter,Segoe UI,Arial" font-size="19" font-weight="850">Gradio v7 UI</text>
+    <text x="902" y="626" fill="#a9bdd1" font-family="Inter,Segoe UI,Arial" font-size="13">live ticker plus interactive chart tabs</text>
+    
+  <path d="M919 458 C653 458, 653 560, 387 560" fill="none" stroke="#70c7e8" stroke-width="2.4" marker-end="url(#arr)" opacity="0.78"/><path d="M609 458 C653 458, 653 560, 697 560" fill="none" stroke="#70c7e8" stroke-width="2.4" marker-end="url(#arr)" opacity="0.78"/><path d="M1002 458 C1004 458, 1004 560, 1007 560" fill="none" stroke="#70c7e8" stroke-width="2.4" marker-end="url(#arr)" opacity="0.78"/>
+</svg>

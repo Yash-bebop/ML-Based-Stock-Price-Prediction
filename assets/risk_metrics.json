@@ -1,0 +1,38 @@
+{
+  "strategy": {
+    "label": "Ensemble Strategy",
+    "Ann Return %": 23.08,
+    "Ann Vol %": 25.31,
+    "Sharpe": 0.912,
+    "Sortino": 0.784,
+    "Calmar": 2.506,
+    "Omega": 2.265,
+    "Profit Factor": 2.265,
+    "VaR 95% (1d)": 0.0,
+    "CVaR 95% (1d)": -0.07,
+    "VaR 99% (1d)": -1.977,
+    "CVaR 99% (1d)": -3.06,
+    "Max DD %": -9.21,
+    "Skewness": 16.927,
+    "Exc Kurtosis": 343.266,
+    "Tail Ratio": 18710839.35
+  },
+  "buy_hold": {
+    "label": "Buy & Hold",
+    "Ann Return %": 34.35,
+    "Ann Vol %": 28.08,
+    "Sharpe": 1.223,
+    "Sortino": 1.235,
+    "Calmar": 1.03,
+    "Omega": 1.221,
+    "Profit Factor": 1.221,
+    "VaR 95% (1d)": -2.672,
+    "CVaR 95% (1d)": -3.918,
+    "VaR 99% (1d)": -4.62,
+    "CVaR 99% (1d)": -6.03,
+    "Max DD %": -33.36,
+    "Skewness": 0.852,
+    "Exc Kurtosis": 12.377,
+    "Tail Ratio": 0.977
+  }
+}

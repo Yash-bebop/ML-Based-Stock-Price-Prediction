@@ -1,0 +1,10 @@
+{
+  "ticker": "AAPL",
+  "run_timestamp": "2026-06-22T10:45:23.867554",
+  "news_sentiment": 0.129,
+  "alt_news_sentiment": 0.1322,
+  "combined_sentiment": 0.1306,
+  "analyst_score": 0.0,
+  "yahoo_count": 19,
+  "alt_news_count": 50
+}
