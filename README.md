@@ -14,11 +14,11 @@
 
 ## Abstract
 
-This repository is an end-to-end agentic quant research notebook for AAPL. The v4/v7 version expands the earlier stock-prediction pipeline into a broader research cockpit: machine-learning forecasts, neural signal stacking, HMM regime detection, GARCH volatility modeling, Avellaneda-Stoikov spread estimation, walk-forward drift checks, residual diagnostics, portfolio risk analytics, and a Gradio dashboard with interactive quant charts.
+This repository is an end-to-end agentic quant research notebook for AAPL (Apple INC.) & Other NASDAQ, NSE and BSE of India listed stocks . The latest version expands the earlier stock-prediction pipeline into a broader research cockpit: machine-learning forecasts, neural signal stacking, HMM regime detection, GARCH volatility modeling, Avellaneda-Stoikov spread estimation, walk-forward drift checks, residual diagnostics, portfolio risk analytics, and a Gradio dashboard with interactive quant charts.
 
-The goal is not to pretend that daily stock returns are easy to predict. They are not. The goal is to build a transparent research workflow where every prediction is surrounded by validation, uncertainty, explanation, risk, and agentic reasoning.
+The goal is not to pretend that daily stock returns are easy to predict.Because ofcourse they are not. The goal is to build a transparent research workflow where every prediction is surrounded by validation, uncertainty, explanation, risk, and agentic reasoning.
 
-> Educational research project. Not financial advice.
+> This is an educational research project. Not financial advice.
 
 ## Runtime Snapshot
 
