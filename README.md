@@ -1,329 +1,378 @@
 <div align="center">
 
-<img src="assets/hero.svg" alt="Agentic Quant Research Platform hero" width="100%">
+<img src="assets/hero_v4.svg" alt="Agentic Quant ML Pipeline v4 hero" width="100%">
 
 <br>
 
-![Python](https://img.shields.io/badge/Python-ML%20Pipeline-00d4ff?style=for-the-badge&labelColor=071018)
+![Python](https://img.shields.io/badge/Python-Quant%20ML-00d4ff?style=for-the-badge&labelColor=071018)
 ![XGBoost](https://img.shields.io/badge/XGBoost-Best%20RMSE-b388ff?style=for-the-badge&labelColor=071018)
-![SHAP](https://img.shields.io/badge/SHAP-Explainability-61e294?style=for-the-badge&labelColor=071018)
-![LangGraph](https://img.shields.io/badge/LangGraph-Agentic%20Workflow-ffcc66?style=for-the-badge&labelColor=071018)
-![Gradio](https://img.shields.io/badge/Gradio-Live%20Dashboard-ff6b6b?style=for-the-badge&labelColor=071018)
+![Neural Stacker](https://img.shields.io/badge/Neural%20Stacker-Best%20Direction-61e294?style=for-the-badge&labelColor=071018)
+![GARCH](https://img.shields.io/badge/GARCH-Volatility-ffcc66?style=for-the-badge&labelColor=071018)
+![Gradio](https://img.shields.io/badge/Gradio-v7%20Quant%20Dashboard-ff6b6b?style=for-the-badge&labelColor=071018)
 
 </div>
 
-## What This Project Is
+## Abstract
 
-This notebook is my attempt to build a small but serious market intelligence system around AAPL. It is not just "train a model and print a prediction." The pipeline collects market data, builds technical and macro features, trains multiple forecasting models, explains the model with SHAP, runs walk-forward validation, backtests a simple strategy, and then routes the result through an agentic AI research workflow.
+This repository is an end-to-end agentic quant research notebook for AAPL. The v4/v7 version expands the earlier stock-prediction pipeline into a broader research cockpit: machine-learning forecasts, neural signal stacking, HMM regime detection, GARCH volatility modeling, Avellaneda-Stoikov spread estimation, walk-forward drift checks, residual diagnostics, portfolio risk analytics, and a Gradio dashboard with interactive quant charts.
 
-The main idea is simple:
+The goal is not to pretend that daily stock returns are easy to predict. They are not. The goal is to build a transparent research workflow where every prediction is surrounded by validation, uncertainty, explanation, risk, and agentic reasoning.
 
-> a forecast is useful, but a forecast plus evidence, failure checks, explanation, sentiment, and debate is much more useful.
+> Educational research project. Not financial advice.
 
-The project uses daily AAPL data from 2015-01-01 to 2026-06-19, then evaluates on an out-of-sample test window from 2024-04-25 to 2026-06-16. The target is next-day log return, which is a much harder and noisier target than predicting raw price levels.
-
-> This is educational research code, not financial advice.
-
-## Live Dashboard Snapshot
-
-The deployed Gradio interface exposes the notebook as a usable product surface: ticker input, live price card, model forecast table, NSE watchlist, and agent decision trace.
-
-| Forecast UI | Agent Decision |
-|---|---|
-| <img src="assets/gradio_prediction.png" alt="Gradio prediction screenshot" width="100%"> | <img src="assets/gradio_agent_decision.png" alt="Gradio agent decision screenshot" width="100%"> |
-
-For the captured AAPL run, the app showed:
+## Runtime Snapshot
 
 | Field | Value |
 |---|---:|
-| Live price | $298.05 |
-| XGBoost forecast | $298.20 |
-| LightGBM forecast | $296.57 |
-| Random Forest forecast | $296.91 |
-| Ensemble forecast | $297.29 |
-| Ensemble change vs live | -0.25% |
-| Signal | Bearish |
-| Live data injected | True |
-| Prediction date | 2026-06-20 |
-
-## High-Level Architecture
-
-<img src="assets/architecture.svg" alt="High-level architecture" width="100%">
-
-At a high level, the notebook behaves like a layered research system:
-
-| Layer | What Happens |
-|---|---|
-| Data layer | Downloads AAPL OHLCV data, market context assets, live prices, news, and macro indicators. |
-| Feature factory | Converts raw time series into technical, volume, volatility, lag, calendar, macro, and sentiment features. |
-| Model bench | Trains linear models, tree ensembles, gradient boosting models, an ensemble, and LSTM. |
-| Evaluation layer | Measures RMSE, MAE, R2, direction accuracy, confidence intervals, p-values, confusion matrices, and walk-forward results. |
-| Explainability layer | Uses SHAP to rank the features driving the XGBoost model. |
-| Agentic layer | Turns model output into structured technical, sentiment, bull, bear, and portfolio-manager reasoning. |
-| Interface layer | Ships the workflow through a Gradio dashboard with live market refresh. |
-
-## Low-Level Notebook Walkthrough
-
-| Step | Notebook Component | Important Functions / Objects | What It Does |
-|---:|---|---|---|
-| 1 | Configuration | `CONFIG`, API keys | Sets ticker, date range, test size, folds, model settings, and optional API keys. |
-| 2 | API diagnostics | Alpha Vantage, Finnhub, FRED checks | Verifies which external data sources are live before the pipeline depends on them. |
-| 3 | Live price feed | `get_live_price`, `_fetch_finnhub`, `_fetch_nse`, `_fetch_yfinance_intraday`, `_fetch_yfinance_daily` | Tries multiple sources and falls back automatically when one source fails. |
-| 4 | Historical data | `download_stock_data`, `add_market_context` | Pulls AAPL and market context tickers like SPY, QQQ, XLK, and VIX. |
-| 5 | Data agent | `run_data_agent` | Adds news sentiment, analyst score, Fed Funds Rate, yield curve, FRED VIX, and CPI context. |
-| 6 | Feature engineering | `engineer_features` | Builds 45 model-ready features and drops rows that are not usable after rolling windows. |
-| 7 | Split and evaluation | `split_data`, `evaluate_model`, `plot_confusion_matrix` | Uses chronological train-test split and avoids random shuffling leakage. |
-| 8 | Tuning | `xgb_objective`, `lgb_objective`, Optuna | Tunes XGBoost and LightGBM with time-series folds. |
-| 9 | Model training | `train_eval` | Trains linear regression, ridge, XGBoost, LightGBM, random forest, ensemble, and LSTM. |
-| 10 | Intraday update | `retrain_on_intraday` | Attempts to fine-tune with same-day 5-minute bars. In this run, it fell back because only 78 intraday rows were available and 200 were required. |
-| 11 | Validation | `walk_forward_validation` | Re-trains across rolling windows to test stability through different regimes. |
-| 12 | Explainability | `shap.TreeExplainer` | Produces SHAP bar and beeswarm plots for model interpretability. |
-| 13 | Multi-step forecast | `multistep_forecast` | Tests whether error grows from T+1 to T+10. It does, which is expected. |
-| 14 | Live inference | `predict_tomorrow` | Injects live price into a clean feature path and returns model-level price forecasts. |
-| 15 | Agent graph | `TradingState`, `StateGraph`, `technical_analyst`, `sentiment_analyst`, `bull_researcher`, `bear_researcher`, `portfolio_manager` | Converts numbers into debate-style investment reasoning. |
-| 16 | Backtest | `backtest_strategy` | Runs a simple long-flat strategy with transaction cost, stop-loss, and take-profit logic. |
-| 17 | LLM report | `run_groq_agent` | Generates a concise research report from metrics, sentiment, prediction, and walk-forward data. |
-| 18 | Gradio app | `gradio_predict`, `run_agents`, `refresh_live_ticker`, `refresh_indian_watchlist` | Exposes the project as an interactive dashboard. |
-| 19 | Artifact export | CSV, JSON, PNG, model files | Saves predictions, metrics, tomorrow forecast, SHAP plots, model comparison, and trained models. |
-
-## Feature Universe
-
-The final training matrix contains 45 engineered features after rolling-window cleanup. I grouped them because reading one giant list is painful.
-
-<details>
-<summary><b>Full engineered feature list</b></summary>
-
-| Group | Features |
-|---|---|
-| Market context | `SPY_Return`, `SPY_Lag1`, `QQQ_Return`, `QQQ_Lag1`, `XLK_Return`, `XLK_Lag1`, `VIX_Return`, `VIX_Lag1` |
-| Trend | `SMA_20`, `SMA_50`, `SMA_200`, `EMA_12`, `EMA_26`, `Price_vs_SMA20`, `Price_vs_SMA50` |
-| Momentum | `MACD`, `MACD_Signal`, `MACD_Hist`, `RSI_14`, `Stoch_K`, `Stoch_D` |
-| Volatility | `BB_Upper`, `BB_Middle`, `BB_Lower`, `BB_Width`, `BB_Pct`, `ATR_14`, `Rolling_Std_20` |
-| Return memory | `Daily_Return`, `Log_Return`, `Return_Lag_1`, `Return_Lag_2`, `Return_Lag_3`, `Return_Lag_5`, `Return_Lag_10`, `Rolling_Return_5`, `Rolling_Return_10`, `Rolling_Return_20` |
-| Volume | `OBV`, `Volume_SMA_20`, `Volume_Ratio` |
-| Calendar | `Day_of_Week`, `Month`, `Quarter` |
-| Live feature | `Intraday_Return` |
-
-</details>
-
-The notebook also enriches the raw dataframe with `News_Sentiment`, `Analyst_Score`, `Fed_Funds_Rate`, `Yield_Curve`, `VIX_FRED`, and `CPI`. Those are part of the intelligence layer even when the final exported feature list focuses on the model-ready technical set.
-
-## Experimental Setup
-
-| Item | Value |
-|---|---:|
 | Ticker | AAPL |
-| Historical start | 2015-01-01 |
-| Notebook run date | 2026-06-19 |
-| Downloaded daily rows | 2,882 |
-| Feature rows after rolling windows | 2,681 |
-| Train rows | 2,144 |
-| Test rows | 537 |
-| Test period | 2024-04-25 to 2026-06-16 |
-| Target | Next-day log return |
-| Best exported RMSE model | XGBoost |
-| Best exported directional accuracy | LSTM |
-
-The split is chronological. This matters because random train-test splits are usually too optimistic for time series. The model only trains on the past and evaluates on later observations.
-
-## Model Results
-
-<img src="assets/model_comparison.png" alt="Model comparison chart" width="100%">
-
-| Model | RMSE | MAE | R2 | Direction Acc | P-Value | Significant |
-|---|---:|---:|---:|---:|---:|---|
-| XGBoost | 0.017614 | 0.011802 | -0.0053 | 50.09% | 0.7373 | No |
-| Linear Regression | 0.017685 | 0.012100 | -0.0134 | 50.09% | 0.0051 | Yes |
-| Ridge Regression | 0.017726 | 0.012110 | -0.0181 | 49.72% | 0.0042 | Yes |
-| Ensemble | 0.017838 | 0.012340 | -0.0309 | 47.86% | 0.0000 | Yes |
-| LightGBM | 0.018011 | 0.012520 | -0.0511 | 48.04% | 0.0000 | Yes |
-| Random Forest | 0.019411 | 0.014211 | -0.2209 | 46.74% | 0.0000 | Yes |
-| LSTM | 0.127247 | 0.106559 | -52.3907 | 51.98% | 0.0000 | Yes |
-
-The important takeaway is not "the model cracked the market." It did not. The honest takeaway is more interesting:
-
-1. XGBoost had the best exported RMSE at `0.017614`.
-2. Linear and ridge regression were extremely close to XGBoost, which suggests the signal is weak and not magically unlocked by complexity.
-3. LSTM had the highest directional accuracy, but its RMSE and R2 were terrible. I would not trust it for magnitude forecasting in this run.
-4. MAPE is visually included in the runtime chart, but it is not a good primary metric here because the target is log return. Near-zero denominators can make MAPE explode.
-
-## Forecast Diagnostics
-
-<img src="assets/forecast_trace.svg" alt="Forecast trace" width="100%">
-
-<img src="assets/residual_diagnostics.svg" alt="Residual diagnostics" width="100%">
-
-<img src="assets/signal_path.svg" alt="Signal path" width="100%">
-
-Derived from `predictions.csv`:
-
-| Diagnostic | Value |
-|---|---:|
+| Runtime date | 2026-06-22 |
 | Test observations | 537 |
-| Actual mean daily log return | 0.001052 |
-| Actual daily log return std | 0.017584 |
-| XGBoost residual mean | 0.000912 |
-| XGBoost residual std | 0.017607 |
+| Test window | 2024-04-26 to 2026-06-17 |
+| Best RMSE model | XGBoost |
+| Best RMSE | 0.017655 |
+| Best directional model | Neural Stacker |
+| Best directional accuracy | 55.37% |
+| Live price | $298.01 |
+| Ensemble forecast | $296.97 |
+| Sentiment-adjusted forecast | $297.03 |
+| Signal | BEARISH |
+| Prediction date | 2026-06-23 |
 
-The residual standard deviation being close to the actual return standard deviation is a useful reality check. The model is learning something around the edges, but daily equity returns are still very noisy.
+## Architecture
 
-## Walk-Forward and Horizon Tests
+<img src="assets/architecture_v4.svg" alt="v4 architecture" width="100%">
 
-| Test | Result |
-|---|---:|
-| Walk-forward windows | 34 |
-| Mean walk-forward RMSE | 0.017913 |
-| Walk-forward RMSE std | 0.006854 |
-| Mean walk-forward direction accuracy | 52.3% |
-| Direction accuracy std | 7.3% |
+The notebook is organized as a layered system:
 
-Multi-step forecasting behaved like a time-series forecast usually behaves: the farther out the target, the more error accumulates.
+| Layer | What It Adds |
+|---|---|
+| Data and sentiment | AAPL OHLCV, SPY/QQQ/XLK/VIX context, Finnhub live quotes, FRED macro fields, news sentiment. |
+| Feature engineering | 67-column feature frame with trend, volatility, volume, lag, macro, calendar, and live-injected features. |
+| Forecast bench | Linear regression, ridge, XGBoost, LightGBM, random forest, weighted ensemble, LSTM. |
+| Neural stacker | Learns from base model signals and becomes the best directional model in this run. |
+| Quant diagnostics | ADF stationarity, Ljung-Box residual autocorrelation, QQ/fat-tail diagnostics, walk-forward drift. |
+| Regime and volatility | HMM bull/bear regimes plus GARCH(1,1) conditional volatility. |
+| Market-making model | Avellaneda-Stoikov reservation price and spread model as a risk/liquidity lens. |
+| Risk layer | Strategy vs buy-and-hold comparison using Sharpe, Sortino, Calmar, VaR, CVaR, drawdown, and tail metrics. |
+| Agentic workflow | Technical, sentiment, bull, bear, and portfolio-manager agents turn metrics into a decision narrative. |
+| Gradio v7 dashboard | Live ticker card, forecast output, NSE watchlist, and interactive quant chart tabs. |
 
-| Horizon | RMSE |
-|---:|---:|
-| T+1 | 0.017615 |
-| T+3 | 0.032943 |
-| T+5 | 0.042769 |
-| T+10 | 0.060719 |
+## Asset Pack
 
-## Explainability
+Attach the full `assets/` folder with this README. The important files are:
 
-<img src="assets/shap_summary.png" alt="SHAP feature importance" width="70%">
+| Asset | Use In The README |
+|---|---|
+| `model_comparison.png` | Static model benchmark across RMSE, MAPE, and direction accuracy. |
+| `shap_summary.png` | Bar-style global SHAP importance for the XGBoost model. |
+| `shap_beeswarm.png` | Distribution-level SHAP view, useful for direction and spread of feature effects. |
+| `stationarity_diagnostics.png` | ADF, autocorrelation, and stationarity diagnostics for return modeling assumptions. |
+| `hmm_regime_garch.png` | HMM bull/bear regime overlay with GARCH conditional volatility. |
+| `lstm_training_curve.png` | Neural training and validation curve showing the LSTM overfit point. |
+| `walkforward_drift.png` | Rolling walk-forward RMSE and directional-accuracy drift. |
+| `residual_distribution.png` | Residual histogram and QQ-style diagnostics for fat-tail behavior. |
+| `quant_risk_charts.png` | Risk dashboard for drawdown, VaR/CVaR, returns, and model weights. |
+| `backtest_Ensemble.html` | Interactive Plotly backtest equity and trade visualization. |
+| `multistep_forecast.html` | Interactive T+1/T+3/T+5/T+10 forecast horizon view. |
+| `avellaneda_stoikov_spread.html` | Interactive market-making spread chart from the Avellaneda-Stoikov model. |
 
-The SHAP bar chart says the model leaned hardest on volume and technical structure:
+## Gradio v7 Chart Additions
 
-| Rank | Feature | Interpretation |
-|---:|---|---|
-| 1 | `Volume_SMA_20` | Recent volume regime mattered most. |
-| 2 | `OBV` | Directional volume pressure carried signal. |
-| 3 | `BB_Lower` | Lower Bollinger band position helped describe price stress. |
-| 4 | `EMA_12` | Short-horizon trend mattered more than slow trend alone. |
-| 5 | `ATR_14` | Volatility regime was a useful input. |
-| 6 | `Return_Lag_3` | Short memory in returns helped slightly. |
-| 7 | `Rolling_Std_20` | Recent risk level mattered. |
-| 8 | `Day_of_Week` | Calendar effects appeared in the learned structure. |
+The new Gradio dashboard is no longer just a forecast card. It now behaves like a compact quant cockpit with chart tabs. These are the assets I would attach and highlight:
 
-I like this result because it is not random-looking. It is not proof of causality, but it does line up with how a human would think about short-horizon market behavior: volume, volatility, trend, and recent returns.
-
-## Agentic AI Workflow
-
-<img src="assets/agent_workflow.svg" alt="Agentic workflow" width="100%">
-
-The agent layer is built with LangGraph and a shared `TradingState`. The forecast is not treated as the final answer. It becomes evidence that different agents argue over.
-
-| Agent | Input | Output |
+| Dashboard Chart | Asset | Why It Matters |
 |---|---|---|
-| Technical analyst | Forecast table, signal, SHAP features | A technical interpretation of why the model is leaning bullish or bearish. |
-| Sentiment analyst | FinBERT/news/macro sentiment | A sentiment summary and short-term market narrative. |
-| Bull researcher | Technical and sentiment reports | Strongest upside argument. |
-| Bear researcher | Technical and sentiment reports | Strongest downside argument. |
-| Portfolio manager | Bull case, bear case, model signal | Final decision, position size, and rationale. |
+| Model comparison | `assets/model_comparison.png` | Shows how different model families trade off RMSE, MAPE, and directional accuracy. |
+| Accuracy dashboard | generated in notebook UI | Tracks RMSE, MAE, R2, direction accuracy confidence intervals, IC, and DM-style forecast comparison. |
+| Walk-forward drift | `assets/walkforward_drift.png` | Checks whether model performance decays across rolling validation windows. |
+| HMM + GARCH | `assets/hmm_regime_garch.png` | Separates market regimes and volatility states instead of assuming one stable data-generating process. |
+| Residual diagnostics | `assets/residual_distribution.png` | Shows bias, skew, fat tails, and normality issues in prediction errors. |
+| Multi-step forecast | `assets/multistep_forecast.html` | Interactive horizon chart showing error growth from T+1 to T+10. |
+| Backtest | `assets/backtest_Ensemble.html` | Interactive equity and strategy behavior view. |
+| Quant risk | `assets/quant_risk_charts.png` | Drawdown, VaR/CVaR, strategy-vs-benchmark risk, and model weights. |
+| Avellaneda-Stoikov spread | `assets/avellaneda_stoikov_spread.html` | Liquidity-aware market-making spread estimate based on risk aversion and volatility. |
+| SHAP | `assets/shap_summary.png`, `assets/shap_beeswarm.png` | Feature attribution for the XGBoost model. |
+| LSTM training | `assets/lstm_training_curve.png` | Shows where the sequence model starts overfitting. |
 
-The captured app run produced a slightly funny but useful result: the model forecast was bearish, but the portfolio-manager agent still returned `BUY` with `HALF` position sizing. That is actually a good example of why this layer exists. The agent is allowed to disagree with the raw model when it sees the signal as weak, noisy, or potentially contrarian.
+## Model Benchmark
 
-I would not treat this as an autonomous trading system. I would treat it as a structured research assistant that forces the pipeline to explain itself from multiple angles.
+<img src="assets/model_comparison.png" alt="Model comparison" width="100%">
 
-## Backtest Result
+| Model | RMSE | MAE | R2 | Direction Acc | Direction CI | IC |
+|---|---:|---:|---:|---:|---:|---:|
+| Linear Regression | 0.018400 | 0.013291 | -0.0970 | 50.28% | [46.1,54.5] | 0.0419 |
+| Ridge Regression | 0.018376 | 0.013252 | -0.0941 | 50.09% | [45.9,54.3] | 0.0433 |
+| XGBoost | 0.017655 | 0.011899 | -0.0099 | 47.67% | [43.5,51.9] | -0.0327 |
+| LightGBM | 0.017807 | 0.012322 | -0.0273 | 48.79% | [44.6,53.0] | 0.0413 |
+| Random Forest | 0.018680 | 0.013322 | -0.1306 | 45.25% | [41.1,49.5] | 0.0977 |
+| Ensemble | 0.017841 | 0.012334 | -0.0312 | 46.18% | [42.0,50.4] | 0.0550 |
+| LSTM | 0.108005 | 0.079507 | -37.4795 | 46.70% | [42.5,51.0] | -0.0413 |
+| Neural Stacker | 0.018917 | 0.013043 | -0.1805 | 55.37% | [51.1,59.5] | -0.0421 |
 
-The notebook includes a fixed, risk-managed backtest for the ensemble signal:
+The result is more interesting than a simple leaderboard:
 
-| Metric | Value |
+1. XGBoost gives the best magnitude forecast with RMSE `0.017655`.
+2. Neural Stacker gives the best directional accuracy at `55.37%`.
+3. Random Forest has the best positive Spearman IC at `0.0977`, even though it is not the best RMSE model.
+4. LSTM remains weak as a magnitude model, with RMSE `0.108005` and strongly negative R2.
+5. MAPE is reported in the artifact, but it should not be treated as the main metric because the target is log return and can be close to zero.
+
+## Neural Stacker
+
+The Neural Stacker is the most important new modeling addition. Instead of treating each model independently, it learns over base model signals from tree models and the LSTM-aligned signal set.
+
+| Stacker Metric | Value |
 |---|---:|
-| Ensemble strategy return | +22.8% |
-| Buy and hold return | +76.2% |
-| Sharpe | 0.75 |
-| Max drawdown | -9.9% |
-| Win rate | 66.7% |
-| Trades | 18 |
-| Transaction cost | 0.1% |
-| Stop-loss | 5% |
-| Take-profit | 10% |
+| RMSE | 0.018917 |
+| MAE | 0.013043 |
+| Direction accuracy | 55.37% |
+| Direction CI | [51.1,59.5] |
+| R2 | -0.1805 |
 
-This is one of the most important honesty checks in the project. The model had useful-looking signals, but the simple strategy did not beat buy and hold on total return. That does not make the work useless. It means the research layer is doing its job: it exposes where predictive modeling and trade construction are not the same thing.
+This is a nice research result because the stacker improves direction but not magnitude. That means it may be more useful as a trade filter than as a raw price forecaster.
 
-## Runtime Forecast Artifact
+## Forecast Artifact
 
 From `tomorrow_prediction.json`:
 
 ```json
 {
   "ticker": "AAPL",
-  "current_price": 298.05,
-  "xgboost": 298.20,
-  "lightgbm": 296.57,
-  "random_forest": 296.91,
-  "ensemble": 297.29,
-  "pct_change": -0.255,
-  "signal": "BEARISH",
-  "prediction_date": "2026-06-20",
+  "live_price": 298.01,
+  "xgboost": 297.5,
+  "lightgbm": 297.03,
+  "random_forest": 296.33,
+  "ensemble": 296.97,
+  "ensemble_sentiment_adjusted": 297.03,
+  "sentiment_score": 0.1306,
+  "pct_change": -0.35,
+  "prediction_date": "2026-06-23",
   "live_injected": true,
   "market_state": "REGULAR"
 }
 ```
 
-The live injection path is a strong engineering choice because it keeps the model from being purely static. The notebook also protects itself by not corrupting daily lag features with raw intraday rows.
+The model stack gave a bearish short-term read:
+
+| Model | Forecast |
+|---|---:|
+| XGBoost | $297.50 |
+| LightGBM | $297.03 |
+| Random Forest | $296.33 |
+| Ensemble | $296.97 |
+| Sentiment-adjusted ensemble | $297.03 |
+
+## Sentiment Layer
+
+| Sentiment Field | Value |
+|---|---:|
+| News sentiment | 0.1290 |
+| Alternative news sentiment | 0.1322 |
+| Combined sentiment | 0.1306 |
+| Analyst score | 0.0000 |
+| Yahoo article count | 19 |
+| Alternative article count | 50 |
+
+The sentiment score is mildly positive, but the final ensemble signal is still bearish. That conflict is useful because it gives the agent layer something real to reason about instead of forcing a one-note conclusion.
+
+## Regime And Volatility Modeling
+
+<img src="assets/hmm_regime_garch.png" alt="HMM regime and GARCH volatility" width="100%">
+
+The notebook adds two serious quant diagnostics:
+
+| Method | What It Tests |
+|---|---|
+| Hidden Markov Model | Whether returns look like they come from different hidden regimes, such as bull and bear states. |
+| GARCH(1,1) | Whether volatility clusters and persists through time. |
+
+Notebook output reported:
+
+| Regime / Volatility Metric | Value |
+|---|---:|
+| Bull-state mean return | +0.00157 |
+| Bear-state mean return | -0.00098 |
+| Test-set bull regime share | 89.6% |
+| Test-set bear regime share | 10.4% |
+| GARCH persistence alpha + beta | 0.9860 |
+| Average annualized GARCH volatility | 27.1% |
+| GARCH volatility range | 15.4% to 94.1% |
+
+The GARCH persistence being close to 1.0 is exactly the kind of behavior finance people expect from volatility: shocks do not disappear instantly.
+
+## Stationarity And Residual Diagnostics
+
+<img src="assets/stationarity_diagnostics.png" alt="Stationarity diagnostics" width="100%">
+
+<img src="assets/residual_distribution.png" alt="Residual distribution" width="100%">
+
+| Diagnostic | Result |
+|---|---:|
+| ADF statistic on log returns | -16.8033 |
+| ADF p-value | 0.000000 |
+| Ljung-Box p-value at lag 5 | 0.0350 |
+| Ljung-Box p-value at lag 10 | 0.1206 |
+| Residual mean | 0.003600 |
+| Residual std | 0.017482 |
+| Residual skew | 0.1589 |
+| Residual excess kurtosis | 8.5535 |
+
+The good part: log returns look stationary by ADF. The uncomfortable part: residuals still show fat tails and non-zero bias. That is not a failure of the README. That is the kind of honest diagnostic a research project should show.
+
+## Walk-Forward Validation
+
+<img src="assets/walkforward_drift.png" alt="Walk-forward drift" width="100%">
+
+| Walk-Forward Metric | Value |
+|---|---:|
+| Windows | 34 |
+| Mean RMSE | 0.017913 |
+| RMSE std | 0.006853 |
+| Mean directional accuracy | 51.7% |
+| Directional accuracy range | 35.5% to 65.6% |
+| Directional trend slope | -0.137% per window |
+
+The drift chart is important because one train-test split can be lucky. Walk-forward validation asks the harder question: does the model keep behaving when the market regime changes?
+
+## Multi-Step Forecasting
+
+Interactive chart: [`assets/multistep_forecast.html`](assets/multistep_forecast.html)
+
+| Horizon | RMSE log-return | RMSE price |
+|---:|---:|---:|
+| T+1 | 0.017668 | $3.939 |
+| T+3 | 0.033279 | $7.448 |
+| T+5 | 0.043337 | $9.780 |
+| T+10 | 0.060362 | $13.874 |
+
+Error grows with horizon, which is exactly what I would expect. The notebook is strongest as a short-horizon research engine, not as a long-range price oracle.
+
+## Explainability
+
+<img src="assets/shap_summary.png" alt="SHAP summary" width="70%">
+
+<img src="assets/shap_beeswarm.png" alt="SHAP beeswarm" width="100%">
+
+The README should include both SHAP views:
+
+| SHAP View | Why It Exists |
+|---|---|
+| Bar summary | Gives the clean feature importance ranking. |
+| Beeswarm | Shows whether high/low feature values push predictions up or down across observations. |
+
+This keeps the model from being a black box. It does not prove causality, but it makes the learned signal inspectable.
+
+## LSTM Training Curve
+
+<img src="assets/lstm_training_curve.png" alt="LSTM training curve" width="100%">
+
+The LSTM is included as a serious experiment, not as a victory lap.
+
+| LSTM Finding | Value |
+|---|---:|
+| Best validation loss epoch | 3 |
+| Final train/validation gap | +0.020618 |
+| Test RMSE | 0.108005 |
+| Direction accuracy | 46.70% |
+
+The curve shows overfitting. That is a good thing to document because it shows the project is not just adding neural networks for decoration.
+
+## Backtest And Risk Layer
+
+Interactive backtest: [`assets/backtest_Ensemble.html`](assets/backtest_Ensemble.html)
+
+<img src="assets/quant_risk_charts.png" alt="Quant risk charts" width="100%">
+
+| Metric | Ensemble Strategy | Buy and Hold |
+|---|---:|---:|
+| Ann Return % | 23.08 | 34.35 |
+| Ann Vol % | 25.31 | 28.08 |
+| Sharpe | 0.912 | 1.223 |
+| Sortino | 0.784 | 1.235 |
+| Calmar | 2.506 | 1.03 |
+| VaR 95% (1d) | 0.0 | -2.672 |
+| CVaR 95% (1d) | -0.07 | -3.918 |
+| Max DD % | -9.21 | -33.36 |
+| Tail Ratio | 18710839.35 | 0.977 |
+
+The strategy did not beat buy-and-hold on annual return or Sharpe in this artifact, but it did reduce max drawdown sharply:
+
+| Comparison | Result |
+|---|---:|
+| Strategy annual return | 23.08% |
+| Buy-and-hold annual return | 34.35% |
+| Strategy max drawdown | -9.21% |
+| Buy-and-hold max drawdown | -33.36% |
+| Strategy Calmar | 2.506 |
+| Buy-and-hold Calmar | 1.03 |
+
+That is the real trade-off: less return, but much better drawdown control.
+
+## Avellaneda-Stoikov Spread Model
+
+Interactive chart: [`assets/avellaneda_stoikov_spread.html`](assets/avellaneda_stoikov_spread.html)
+
+| Market-Making Metric | Value |
+|---|---:|
+| Risk aversion gamma | 0.1 |
+| Kappa | 1.5 |
+| Average half-spread | 3.0193 |
+| Average full spread | 6.0385 |
+| Average full spread percent | 2.5589% |
+| Reservation offset from mid | -0.6862 |
+| Spread range | 3.5257 to 28.3183 |
+
+I would frame this as a liquidity and uncertainty lens. If the predicted move is smaller than the estimated spread, the forecast may not be tradeable after costs and adverse selection.
+
+## Agentic Research Layer
+
+The LangGraph workflow turns structured signals into a debate:
+
+| Agent | Role |
+|---|---|
+| Technical analyst | Reads price forecast, SHAP drivers, and technical evidence. |
+| Sentiment analyst | Reads FinBERT/news/macro sentiment. |
+| Bull researcher | Builds the strongest upside case. |
+| Bear researcher | Builds the strongest downside case. |
+| Portfolio manager | Produces a final decision and position rationale. |
+
+The important improvement is not that the agent always agrees with the model. The improvement is that it is forced to reason over uncertainty, conflicting evidence, and risk metrics.
 
 ## Main Findings
 
-| Finding | What I Learned |
+| Finding | Interpretation |
 |---|---|
-| Daily return forecasting is hard | Even the best models sit close to coin-flip direction accuracy. |
-| XGBoost was the best magnitude model | It gave the best RMSE, but only narrowly beat simpler baselines. |
-| LSTM was not robust here | Highest direction accuracy did not compensate for very poor RMSE and R2. |
-| SHAP made the system more trustworthy | Volume, volatility, and trend features dominated instead of random columns. |
-| Backtesting changed the story | A decent forecast did not automatically become a superior strategy. |
-| Agentic reasoning added structure | The system could debate weak, conflicting evidence instead of blindly obeying the model. |
-| Fallback logic mattered | Finnhub, NSE, yfinance, and daily fallbacks kept the live app usable under API issues. |
-
-## Why These Design Choices Make Sense
-
-This project is influenced by a few ideas from market efficiency, empirical asset pricing, and machine learning:
-
-1. Fama's efficient market hypothesis says price prediction should be difficult if information is already reflected in prices. The near-coin-flip directional accuracy here is consistent with that warning.
-2. Lo and MacKinlay showed that returns are not always pure random walks, which motivates looking for weak statistical structure without assuming it will be large.
-3. Gu, Kelly, and Xiu showed that ML can help in empirical asset pricing, especially with nonlinear interactions. That supports testing tree models and neural networks instead of only linear baselines.
-4. Bailey, Borwein, Lopez de Prado, and Zhu warned about backtest overfitting. That is why the README reports the backtest result even though it is not flattering.
-5. SHAP is included because a model that cannot explain itself is not very satisfying in finance, where false confidence is expensive.
-
-## How To Run
-
-```bash
-pip install yfinance ta xgboost lightgbm optuna shap tensorflow gradio \
-  feedparser fredapi beautifulsoup4 transformers torch groq langgraph langchain-groq
-```
-
-Optional API keys improve the live system but are not all required for the core price pipeline:
-
-| Key | Used For |
-|---|---|
-| `FINNHUB_API_KEY` | Live US quote and company news |
-| `FRED_API_KEY` | Macro features |
-| `ALPHAVANTAGE_API_KEY` | Alternative news feed |
-| `GROQ_API_KEY` | LLM report and agent reasoning |
-
-Expected artifacts after a full run:
-
-| Artifact | Purpose |
-|---|---|
-| `predictions.csv` | Out-of-sample actual vs model predictions |
-| `metrics.json` | Model benchmark table |
-| `tomorrow_prediction.json` | Live inference result |
-| `analysis_report.txt` | LLM-generated research summary |
-| `model_comparison.png` | Runtime model comparison chart |
-| `shap_summary.png` | SHAP feature importance |
-| Model files | XGBoost, LightGBM, Random Forest, and LSTM exports |
+| XGBoost remains the best RMSE model | Gradient boosting is still the strongest magnitude forecaster here. |
+| Neural Stacker wins direction | The meta-layer is useful as a signal filter, even if RMSE is worse than XGBoost. |
+| HMM/GARCH improves market context | Regime and volatility modeling make the forecast environment more interpretable. |
+| Residuals are fat-tailed | Normal-error assumptions are dangerous for this data. |
+| LSTM overfits | Sequence modeling did not beat simpler models in this setup. |
+| Risk improved, return did not | The strategy reduced drawdown but did not beat buy-and-hold on return or Sharpe. |
+| Gradio v7 is a real cockpit | The app now surfaces diagnostics, not just a prediction. |
 
 ## Limitations
 
-This is the part I would rather be honest about than hide:
+1. AAPL-only results should not be treated as universal market evidence.
+2. Directional accuracy is improved by the Neural Stacker, but 55.37% is still a weak edge.
+3. MAPE is not reliable for log-return targets and should be de-emphasized.
+4. LSTM overfits and should be treated as an experimental baseline.
+5. The strategy reduces drawdown, but buy-and-hold still wins on annual return and Sharpe.
+6. The agentic layer can make fluent arguments, so it must remain evidence-grounded.
+7. HTML charts are interactive locally, but GitHub README previews will show them as links rather than embedded live charts.
 
-1. The target is next-day return, which is extremely noisy.
-2. The model metrics are useful for research, not enough for deployment as a trading strategy.
-3. MAPE is not reliable for near-zero log-return targets.
-4. The intraday fine-tune failed in the captured run because there were only 78 intraday rows, below the 200-row feature requirement.
-5. The NSE watchlist exposed a real data-source failure for `TATAMOTORS.NS`, which is good to log but should be cleaned up in production.
-6. The LLM agent can produce convincing prose even when the statistical evidence is weak, so it should be treated as a reasoning layer, not a truth engine.
-7. The backtest is intentionally simple and should not be read as an institutional execution simulation.
+## Reproducibility
+
+Core files included in the zip output:
+
+| File | Purpose |
+|---|---|
+| `predictions.csv` | Out-of-sample actual vs predicted returns. |
+| `metrics.json` | Model metrics, confidence intervals, IC, and DM statistics. |
+| `tomorrow_prediction.json` | Live forecast payload for AAPL. |
+| `sentiment_report.json` | News and alternative sentiment snapshot. |
+| `risk_metrics.json` | Strategy and buy-hold risk comparison. |
+| `walkforward_results.csv` | Rolling validation windows. |
+| `analysis_report.txt` | LLM-generated five-point summary. |
 
 ## Research References
 
@@ -331,14 +380,12 @@ This is the part I would rather be honest about than hide:
 2. Andrew W. Lo and A. Craig MacKinlay, [Stock Market Prices Do Not Follow Random Walks](https://academic.oup.com/rfs/article-abstract/1/1/41/1601244), Review of Financial Studies, 1988.
 3. Shihao Gu, Bryan Kelly, and Dacheng Xiu, [Empirical Asset Pricing via Machine Learning](https://academic.oup.com/rfs/article/33/5/2223/5758276), Review of Financial Studies, 2020.
 4. Tianqi Chen and Carlos Guestrin, [XGBoost: A Scalable Tree Boosting System](https://dl.acm.org/doi/10.1145/2939672.2939785), KDD, 2016.
-5. Guolin Ke et al., [LightGBM: A Highly Efficient Gradient Boosting Decision Tree](https://papers.nips.cc/paper/6907-lightgbm-a-highly-efficient-gradient-boosting-decision-tree), NeurIPS, 2017.
-6. Sepp Hochreiter and Jurgen Schmidhuber, [Long Short-Term Memory](https://direct.mit.edu/neco/article/9/8/1735/6109/Long-Short-Term-Memory), Neural Computation, 1997.
-7. Scott Lundberg and Su-In Lee, [A Unified Approach to Interpreting Model Predictions](https://arxiv.org/abs/1705.07874), NeurIPS, 2017.
-8. Dogu Araci, [FinBERT: Financial Sentiment Analysis with Pre-trained Language Models](https://arxiv.org/abs/1908.10063), arXiv, 2019.
-9. David H. Bailey, Jonathan M. Borwein, Marcos Lopez de Prado, and Qiji Jim Zhu, [The Probability of Backtest Overfitting](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253), SSRN, 2013.
+5. Scott Lundberg and Su-In Lee, [A Unified Approach to Interpreting Model Predictions](https://arxiv.org/abs/1705.07874), NeurIPS, 2017.
+6. James D. Hamilton, [A New Approach to the Economic Analysis of Nonstationary Time Series and the Business Cycle](https://www.jstor.org/stable/1912559), Econometrica, 1989.
+7. Tim Bollerslev, [Generalized Autoregressive Conditional Heteroskedasticity](https://www.sciencedirect.com/science/article/abs/pii/0304407686900631), Journal of Econometrics, 1986.
+8. Marco Avellaneda and Sasha Stoikov, [High-frequency trading in a limit order book](https://www.tandfonline.com/doi/abs/10.1080/14697680701381228), Quantitative Finance, 2008.
+9. Francis X. Diebold and Roberto S. Mariano, [Comparing Predictive Accuracy](https://www.tandfonline.com/doi/abs/10.1080/07350015.1995.10524599), Journal of Business and Economic Statistics, 1995.
 
-## Final Note
+## Closing Note
 
-The strongest part of this project is not that it predicts tomorrow perfectly. It does not. The strongest part is that the whole workflow is inspectable: data, features, models, validation, explainability, agents, UI, and exported artifacts all connect into one research loop.
-
-That is the part I am most proud of.
+This version is a big jump from a stock-prediction notebook into a proper research system. The strongest part is not the bearish AAPL call itself. The strongest part is that the project now explains the call through model comparison, feature attribution, regime context, volatility, residual behavior, risk, and agentic debate.
