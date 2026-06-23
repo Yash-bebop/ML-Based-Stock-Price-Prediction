@@ -1,0 +1,32 @@
+# Data Manipulation & Math
+numpy
+pandas
+scipy
+statsmodels
+
+# Machine Learning & AI
+scikit-learn
+xgboost
+lightgbm
+tensorflow
+optuna
+shap
+hmmlearn
+arch
+
+# NLP & Agents
+transformers
+langchain-groq
+langgraph
+beautifulsoup4
+feedparser
+
+# Visualization & App
+matplotlib
+plotly
+gradio
+
+# Financial & APIs
+yfinance
+ta
+requests
