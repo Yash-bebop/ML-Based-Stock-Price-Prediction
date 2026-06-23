@@ -8,7 +8,7 @@
 ![XGBoost](https://img.shields.io/badge/XGBoost-Best%20RMSE-b388ff?style=for-the-badge&labelColor=071018)
 ![Neural Stacker](https://img.shields.io/badge/Neural%20Stacker-Best%20Direction-61e294?style=for-the-badge&labelColor=071018)
 ![GARCH](https://img.shields.io/badge/GARCH-Volatility-ffcc66?style=for-the-badge&labelColor=071018)
-![Gradio](https://img.shields.io/badge/Gradio-v7%20Quant%20Dashboard-ff6b6b?style=for-the-badge&labelColor=071018)
+![Gradio](https://img.shields.io/badge/Gradio-%20Quant%20Dashboard-ff6b6b?style=for-the-badge&labelColor=071018)
 
 </div>
 
@@ -55,7 +55,7 @@ The notebook is organized as a layered system:
 | Market-making model | Avellaneda-Stoikov reservation price and spread model as a risk/liquidity lens. |
 | Risk layer | Strategy vs buy-and-hold comparison using Sharpe, Sortino, Calmar, VaR, CVaR, drawdown, and tail metrics. |
 | Agentic workflow | Technical, sentiment, bull, bear, and portfolio-manager agents turn metrics into a decision narrative. |
-| Gradio v7 dashboard | Live ticker card, forecast output, NSE watchlist, and interactive quant chart tabs. |
+| Gradio dashboard | Live ticker card, forecast output, NSE watchlist, and interactive quant chart tabs. |
 
 ## Asset Pack
 
@@ -76,7 +76,7 @@ Attach the full `assets/` folder with this README. The important files are:
 | `multistep_forecast.html` | Interactive T+1/T+3/T+5/T+10 forecast horizon view. |
 | `avellaneda_stoikov_spread.html` | Interactive market-making spread chart from the Avellaneda-Stoikov model. |
 
-## Gradio v7 Chart Additions
+## Gradio Chart Additions
 
 The new Gradio dashboard is no longer just a forecast card. It now behaves like a compact quant cockpit with chart tabs. These are the assets I would attach and highlight:
 
@@ -348,7 +348,7 @@ The important improvement is not that the agent always agrees with the model. Th
 | Residuals are fat-tailed | Normal-error assumptions are dangerous for this data. |
 | LSTM overfits | Sequence modeling did not beat simpler models in this setup. |
 | Risk improved, return did not | The strategy reduced drawdown but did not beat buy-and-hold on return or Sharpe. |
-| Gradio v7 is a real cockpit | The app now surfaces diagnostics, not just a prediction. |
+| Gradio is a real cockpit | The app now surfaces diagnostics, not just a prediction. |
 
 ## Limitations
 
