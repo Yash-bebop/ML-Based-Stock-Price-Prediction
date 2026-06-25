@@ -275,7 +275,7 @@ The LSTM is included as a serious experiment, not as a victory lap.
 | Test RMSE | 0.108005 |
 | Direction accuracy | 46.70% |
 
-The curve shows overfitting. That is a good thing to document because it shows the project is not just adding neural networks for decoration.
+The curve shows overfitting. 
 
 ## Backtest And Risk Layer
 
